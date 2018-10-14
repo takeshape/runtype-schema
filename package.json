@@ -1,0 +1,38 @@
+{
+  "name": "runtype-schema",
+  "version": "0.0.0-development",
+  "scripts": {
+    "test": "jest --no-cache --verbose --coverage",
+    "build": "tsc --pretty",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "semantic-release": "semantic-release"
+  },
+  "files": [
+    "build"
+  ],
+  "types": "./build/index.d.ts",
+  "main": "./build/index.js",
+  "peerDependencies": {
+    "ajv": "6",
+    "runtypes": "2"
+  },
+  "license": "MIT",
+  "author": "Andrew Monks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amonks/runtype-schema.git"
+  },
+  "devDependencies": {
+    "@types/ajv": "^1.0.0",
+    "@types/jest": "^23.3.5",
+    "@types/json-schema": "^7.0.1",
+    "ajv": "^6.5.4",
+    "coveralls": "^3.0.2",
+    "fast-check": "^1.6.2",
+    "jest": "^23.6.0",
+    "runtypes": "^2.1.6",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.3",
+    "semantic-release": "^15.9.17"
+  }
+}

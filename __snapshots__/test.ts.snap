@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`runtype to json schema always snapshot: always 1`] = `true`;
+
+exports[`runtype to json schema array snapshot: array 1`] = `
+Object {
+  "items": Object {
+    "type": "null",
+  },
+  "type": "array",
+}
+`;
+
+exports[`runtype to json schema boolean snapshot: boolean 1`] = `
+Object {
+  "type": "boolean",
+}
+`;
+
+exports[`runtype to json schema dictionary snapshot: dictionary 1`] = `
+Object {
+  "additionalProperties": Object {
+    "type": "number",
+  },
+  "type": "object",
+}
+`;
+
+exports[`runtype to json schema intersect snapshot: intersect 1`] = `
+Object {
+  "allOf": Array [
+    Object {
+      "type": "string",
+    },
+    Object {
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`runtype to json schema literal snapshot: literal 1`] = `
+Object {
+  "type": "null",
+}
+`;
+
+exports[`runtype to json schema never snapshot: never 1`] = `false`;
+
+exports[`runtype to json schema number snapshot: number 1`] = `
+Object {
+  "type": "number",
+}
+`;
+
+exports[`runtype to json schema partial snapshot: partial 1`] = `
+Object {
+  "anyOf": Array [
+    Object {
+      "type": "string",
+    },
+    Object {
+      "type": "number",
+    },
+    Object {
+      "type": "boolean",
+    },
+    Object {
+      "type": "array",
+    },
+    Object {
+      "properties": Object {
+        "a": Object {
+          "enum": Array [
+            "a",
+          ],
+        },
+        "b": Object {
+          "enum": Array [
+            "b",
+          ],
+        },
+      },
+      "type": "object",
+    },
+  ],
+}
+`;
+
+exports[`runtype to json schema record snapshot: record 1`] = `
+Object {
+  "properties": Object {
+    "a": Object {
+      "enum": Array [
+        "a",
+      ],
+    },
+    "b": Object {
+      "enum": Array [
+        "b",
+      ],
+    },
+  },
+  "required": Array [
+    "a",
+    "b",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`runtype to json schema string snapshot: string 1`] = `
+Object {
+  "type": "string",
+}
+`;
+
+exports[`runtype to json schema tuple snapshot: tuple 1`] = `
+Object {
+  "items": Array [
+    Object {
+      "enum": Array [
+        "a",
+      ],
+    },
+    Object {
+      "enum": Array [
+        "b",
+      ],
+    },
+  ],
+  "maxItems": 2,
+  "minItems": 2,
+  "type": "array",
+}
+`;
+
+exports[`runtype to json schema union snapshot: union 1`] = `
+Object {
+  "anyOf": Array [
+    Object {
+      "type": "number",
+    },
+    Object {
+      "type": "string",
+    },
+  ],
+}
+`;
+
+exports[`runtype to json schema void snapshot: void 1`] = `
+Object {
+  "enum": Array [
+    null,
+    undefined,
+  ],
+}
+`;
