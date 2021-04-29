@@ -1,133 +1,138 @@
-import * as runtype from "runtypes";
-import Ajv = require("ajv");
-import fc from "fast-check";
+import * as runtype from 'runtypes';
+import fc from 'fast-check';
+import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
 
-const validator = new Ajv();
+export function createAjv(): Ajv {
+  const ajv = new Ajv();
+  addFormats(ajv);
+  return ajv;
+}
 
-import { runtypeToJsonSchema } from "./src/runtypeToJsonSchema";
-import { jsonSchemaToRuntype } from "./src/jsonSchemaToRuntype";
+const validator = createAjv();
+
+import {runtypeToJsonSchema} from './src/runtypeToJsonSchema';
+import {jsonSchemaToRuntype} from './src/jsonSchemaToRuntype';
 
 const validJson = fc.jsonObject;
 const jsonScalar = () =>
   fc
-    .oneof<string | number | boolean | null>(
-      fc.constant(null),
-      fc.string(),
-      fc.double(),
-      fc.nat(),
-      fc.boolean()
-    )
-    .filter(
-      v => typeof v !== "number" || (!Number.isNaN(v) && Number.isFinite(v))
-    );
+    // @ts-expect-error
+    .oneof<string | number | boolean | null>(fc.constant(null), fc.string(), fc.double(), fc.nat(), fc.boolean())
+    .filter(v => typeof v !== 'number' || (!Number.isNaN(v) && Number.isFinite(v)));
 
 const testdata: Array<{
   name: string;
-  runtype?: runtype.Runtype;
-  runtypeGenerator?: fc.Arbitrary<runtype.Runtype>;
+  runtype?: any;
+  runtypeGenerator?: any;
 }> = [
   {
-    name: "string",
+    name: 'string',
     runtype: runtype.String
   },
-  { name: "number", runtype: runtype.Number },
-  { name: "boolean", runtype: runtype.Boolean },
-  { name: "always", runtype: runtype.Always },
-  { name: "never", runtype: runtype.Never },
-  { name: "void", runtype: runtype.Void },
+  {name: 'number', runtype: runtype.Number},
+  {name: 'boolean', runtype: runtype.Boolean},
+  {name: 'always', runtype: runtype.Always},
+  {name: 'never', runtype: runtype.Never},
+  {name: 'void', runtype: runtype.Void},
   {
-    name: "literal",
+    name: 'literal',
     runtype: runtype.Literal(null),
     runtypeGenerator: jsonScalar().map(s => runtype.Literal(s as any))
   },
   {
-    name: "array",
+    name: 'array',
     runtype: runtype.Array(runtype.Literal(null)),
+    // @ts-expect-error
     runtypeGenerator: jsonScalar().map(v => runtype.Array(runtype.Literal(v)))
   },
   {
-    name: "record",
+    name: 'record',
     runtype: runtype.Record({
-      a: runtype.Literal("a"),
-      b: runtype.Literal("b")
+      // @ts-expect-error
+      a: runtype.Literal('a'),
+      // @ts-expect-error
+      b: runtype.Literal('b')
     }),
     runtypeGenerator: fc.tuple(jsonScalar(), jsonScalar()).map(([a, b]) =>
       runtype.Record({
+        // @ts-expect-error
         a: runtype.Literal(a),
+        // @ts-expect-error
         b: runtype.Literal(b)
       })
     )
   },
   {
-    name: "partial",
+    name: 'partial',
     runtype: runtype.Partial({
-      a: runtype.Literal("a"),
-      b: runtype.Literal("b")
+      // @ts-expect-error
+      a: runtype.Literal('a'),
+      // @ts-expect-error
+      b: runtype.Literal('b')
     }),
     runtypeGenerator: fc
       .tuple(jsonScalar(), jsonScalar())
-      .map(([a, b]) =>
-        runtype.Partial({ a: runtype.Literal(a), b: runtype.Literal(b) })
-      )
+      // @ts-expect-error
+      .map(([a, b]) => runtype.Partial({a: runtype.Literal(a), b: runtype.Literal(b)}))
   },
   {
-    name: "dictionary",
+    name: 'dictionary',
     runtype: runtype.Dictionary(runtype.Number),
-    runtypeGenerator: jsonScalar().map(v =>
-      runtype.Dictionary(runtype.Literal(v))
-    )
+    // @ts-expect-error
+    runtypeGenerator: jsonScalar().map(v => runtype.Dictionary(runtype.Literal(v)))
   },
   {
-    name: "tuple",
-    runtype: runtype.Tuple(runtype.Literal("a"), runtype.Literal("b"))
+    name: 'tuple',
+    runtype: runtype.Tuple(runtype.Literal('a'), runtype.Literal('b'))
   },
   {
-    name: "union",
+    name: 'union',
     runtype: runtype.Union(runtype.Number, runtype.String)
   },
   {
-    name: "intersect",
+    name: 'intersect',
     runtype: runtype.Intersect(runtype.String, runtype.Number)
   }
 ];
 
 const invalidTestdata: {
   name: string;
-  runtype: runtype.Runtype<any>;
+  runtype: any;
 }[] = [
-  { name: "symbol", runtype: runtype.Symbol },
-  { name: "function", runtype: runtype.Function },
+  {name: 'symbol', runtype: runtype.Symbol},
+  {name: 'function', runtype: runtype.Function},
   {
-    name: "constraint",
+    name: 'constraint',
     runtype: runtype.Constraint(runtype.String, s => s.length > 5)
   },
-  { name: "instance of", runtype: runtype.InstanceOf(Object) },
-  { name: "brand", runtype: runtype.Brand("brand", runtype.String) },
-  { name: "invalid literal", runtype: runtype.Literal([] as any) }
+  {name: 'instance of', runtype: runtype.InstanceOf(Object)},
+  {name: 'brand', runtype: runtype.Brand('brand', runtype.String)},
+  {name: 'invalid literal', runtype: runtype.Literal([] as any)}
 ];
 
-describe("runtype to json schema", () => {
-  describe("invalid types", () => {
-    invalidTestdata.forEach(({ name, runtype: r }) => {
+describe('runtype to json schema', () => {
+  describe('invalid types', () => {
+    invalidTestdata.forEach(({name, runtype: r}) => {
       test(name, () => {
         expect(() => runtypeToJsonSchema(r)).toThrow();
       });
     });
   });
 
-  testdata.forEach(({ name, runtype: r, runtypeGenerator }) => {
+  testdata.forEach(({name, runtype: r, runtypeGenerator}) => {
     describe(name, () => {
       if (r) {
-        test("snapshot", () => {
+        test('snapshot', () => {
           const schema = runtypeToJsonSchema(r);
           expect(schema).toMatchSnapshot(name);
         });
       }
 
       if (r || runtypeGenerator) {
-        describe("compatibility", () => {
+        describe('compatibility', () => {
           if (r) {
-            test("given runtype gives same result on any value", () => {
+            test('given runtype gives same result on any value', () => {
               const schema = runtypeToJsonSchema(r);
               const r2 = jsonSchemaToRuntype(schema);
               try {
@@ -146,9 +151,9 @@ describe("runtype to json schema", () => {
           }
 
           if (runtypeGenerator) {
-            test("generated runtype gives same result on any value", () => {
+            test('generated runtype gives same result on any value', () => {
               fc.assert(
-                fc.property(runtypeGenerator, fc.jsonObject(), (r, v) => {
+                fc.property(runtypeGenerator, fc.jsonObject(), (r: runtype.Runtype, v) => {
                   const schema = runtypeToJsonSchema(r);
                   const r2 = jsonSchemaToRuntype(schema);
                   const validate = validator.compile(schema);

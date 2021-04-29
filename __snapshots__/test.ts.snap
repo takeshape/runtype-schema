@@ -152,7 +152,6 @@ exports[`runtype to json schema void snapshot: void 1`] = `
 Object {
   "enum": Array [
     null,
-    undefined,
   ],
 }
 `;

@@ -1,2 +1,2 @@
-export * from "./jsonSchemaToRuntype";
-export * from "./runtypeToJsonSchema";
+export * from './jsonSchemaToRuntype';
+export * from './runtypeToJsonSchema';
